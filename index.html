@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Input Demo</title>
+</head>
+<body>
+    <h1>Interactive Input Demo</h1>
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input -->
+
+
+    <!-- Demo A: Different kinds of event handlers for text inputs / buttons -->
+
+    <h2>Demo A: Text input and button handlers </h2>
+    <label for="textbox1">A text input - type into me</label>
+    <input type="text" id="textbox1">
+    <button id="textbox1Submit">Click to "Submit" text</button>
+    <p id="curText">Your current text is: </p>
+    <p id="changeText">Your last "changed" text is: </p>
+    <p id="submitText">Your last "submitted" text is: </p>
+
+    <script>
+        const textbox1 = document.querySelector("#textbox1");
+
+        function handleTextboxChange(event) {
+            let text = textbox1.value;
+            let paragraphElm = document.querySelector("#changeText");
+            paragraphElm.textContent = 'Your last "changed" text is: ' + text;
+        } 
+        //change fires when the input box loses focus, or enter is pressed
+        textbox1.addEventListener("change", handleTextboxChange);
+
+        function handleTextboxKeyUp(event) {
+            //This is a very similar function to the above, but a bit more condensed
+            document.querySelector("#curText").textContent = 'Your current text is: ' + textbox1.value;
+        } 
+
+        //keyup event fires every time a key is released
+        textbox1.addEventListener("keyup", handleTextboxKeyUp);
+
+        function handleTextboxSubmit(event) {
+            document.querySelector("#submitText").textContent = 'Your last "submitted" text is: ' + textbox1.value;
+        } 
+
+        const textSubmitButton = document.querySelector("#textbox1Submit");
+
+        textSubmitButton.addEventListener("click", handleTextboxSubmit);
+    </script>
+
+
+
+    <hr>    
+    <h2>Demo B: Simple Checkbox </h2>
+
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/checkbox -->
+
+    <input type="checkbox" id="simpleCheckbox" />
+    <label for="simpleCheckbox">Toggle Me!</label>
+    <!-- Note that clicking matched labels also toggles-->
+    <p id="toggleNotif">Am I checked?</p>
+    <script>
+        // You might attach click handlers to the boxes. 
+        const simpleCheckbox = document.querySelector('input#simpleCheckbox[type="checkbox"]');
+        simpleCheckbox.addEventListener('click', function(){
+            // The checked property tells us the state
+            if (simpleCheckbox.checked) {
+                console.log('You checked "Toggle Me"!');
+            }
+            else {
+                console.log('You unchecked "Toggle Me"!');
+            }
+            document.querySelector('#toggleNotif').textContent = "Am I checked? " + simpleCheckbox.checked
+        });
+        
+    </script>
+
+
+    <hr>    
+    <h2>Demo C: Group of Checkboxes </h2>
+
+    <!-- Often, you want a group of checkboxes. -->
+    <!-- fieldset creates a nice box around a group of things -->
+    <!-- Use the name attribute to identify them  as a group -->
+    <!-- Use value attribute to distinguish them -->
+    <fieldset>
+        <legend>Choose your interests</legend>
+        <div>
+          <input type="checkbox" id="codingCheckbox" name="interests" value="coding" checked /> <!-- Put checked as an attribute for default on -->
+          <label for="codingCheckbox">Writing Code</label>    
+        </div>
+        <div>
+          <input type="checkbox" id="musicCheckbox" name="interests" value="music"/>
+          <label for="musicCheckbox">Playing Music</label>
+        </div>
+        <div>
+            <input type="checkbox" id="sportsCheckbox" name="interests" value="sports"/>
+            <label for="sportsCheckbox">Playing Sports</label>
+          </div>
+    </fieldset>
+
+    <p>You are interested in : <span id="interestDisplay"></span></p>
+
+    <script>
+
+        // To handle multiple checkboxes...
+        // querySelectorAll returns ALL matching elements in a list. 
+        // You can select by the name attribute using [name="____"]
+
+        const interestCheckboxes = document.querySelectorAll('input[name="interests"]');
+        
+        // Use a for-of loop to iterate over all elements in the list.
+        for (const elm of interestCheckboxes) {
+            elm.addEventListener('click', handleInterests);
+        }
+
+        function handleInterests(){
+            let checkedCount = 0;
+            let interestSentence = "";
+            for (const elm of interestCheckboxes) {
+                if (elm.checked) {
+                    if (checkedCount != 0) {
+                        interestSentence = interestSentence + " and ";
+                    }
+                    interestSentence = interestSentence + elm.value;
+                    checkedCount++;
+                }
+            }
+            document.querySelector('#interestDisplay').textContent = interestSentence + " ( " + checkedCount + " things)";
+
+        }
+
+        // Call handleInterests() just once at the start as well, to handle default value
+        handleInterests();
+
+    </script>
+
+    <hr>    
+    <h2>Demo D: Group of Radio Buttons </h2>
+
+    <!-- Radio buttons are similar to checkboxes, but with one main difference: -->
+    <!-- Radio buttons with the same name attribute can only have one checked at a time -->
+    <!-- Use value attribute to distinguish them -->
+    <fieldset>
+        <legend>Choose your class grade</legend>
+        <div>
+          <input type="radio" id="freshmanRadio" name="classGrade" value="9" checked /> <!-- Put checked as an attribute for default on -->
+          <label for="freshmanRadio">Freshman (9th grade)</label>    
+        </div>
+        <div>
+            <input type="radio" id="sophomoreRadio" name="classGrade" value="10"  /> 
+            <label for="sophomoreRadio">Sophomore (10th grade)</label>    
+        </div>
+        <div>
+            <input type="radio" id="juniorRadio" name="classGrade" value="11"  /> 
+            <label for="juniorRadio">Junior (11th grade)</label>    
+        </div>
+        <div>
+            <input type="radio" id="seniorRadio" name="classGrade" value="12" /> 
+            <label for="seniorRadio">Senior (12th grade)</label>    
+        </div>
+
+    </fieldset>
+
+    <p>Your class grade is : <span id="classGradeDisplay"></span></p>
+
+    <script>
+
+        // querySelectorAll returns ALL matching elements in a list. 
+        // You can select by the name attribute using [name="____"]
+
+        const classGradeRadios = document.querySelectorAll('input[name="classGrade"]');
+        
+        // Use a for-of loop to iterate over all elements in the list.
+        for (const elm of classGradeRadios) {
+            elm.addEventListener('click', handleClassGrade);
+        }
+
+        function handleClassGrade(){
+            for (const elm of classGradeRadios) {
+                if (elm.checked) {
+                    document.querySelector('#classGradeDisplay').textContent = elm.value;
+                }
+
+            }
+
+        }
+
+        // Call handleClassGrade() just once at the start as well, to handle default value
+        handleClassGrade();
+
+    </script>
+
+
+
+<hr>    
+<h2>Demo E: Group of button inputs with values</h2>
+
+<!-- You can make buttons with either <button></button> or <input type="button">  -->
+
+<!-- Either way, you can use the "class" attribute to group them 
+     and the "value" attribute to distinguish them -->
+
+<!-- To make a button out of an image, use <input type="image" src="____"> -->
+
+<fieldset>
+    <legend>Click us!</legend>
+
+    <button class="sillyButton" value="yay!">Click Me!</button>
+    <button class="sillyButton" value="woo!!">No, click Me!</button>
+    <button class="sillyButton" value="yes!!!">Please click Meeeeee!</button>
+    <input type="image" class="sillyButton" value="*click*" src="click.png" height="24px">
+    <h3 id="sillyResponse"></h3>
+
+</fieldset>
+
+<!-- You can register a single click handler for the whole group
+    while using the value to handle each click slightly differently -->
+
+<script>
+
+    // querySelectorAll returns ALL matching elements in a list. 
+    const sillyButtons = document.querySelectorAll('.sillyButton');
+    
+    // Use a for-of loop to iterate over all elements in the list.
+    for (const elm of sillyButtons) {
+        elm.addEventListener('click', handleSillyButton);
+    }
+
+    // Handler function can take the "event" parameter
+    function handleSillyButton(event){
+        // Use event.target to refer to the button being clicked
+        event.target.style.color = "red";
+        document.querySelector("#sillyResponse").textContent = event.target.value;
+    }
+
+</script>
+
+</body>
+</html>
